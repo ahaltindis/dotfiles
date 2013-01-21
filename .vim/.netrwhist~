@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/run'
+let g:netrw_dirhist_2='/run/ConsoleKit'
+let g:netrw_dirhist_3='/run'
+let g:netrw_dirhist_4='/run/console'
+let g:netrw_dirhist_5='/media/METOO/3fe7cbfa3ed52067621aff0a6da959d4'
