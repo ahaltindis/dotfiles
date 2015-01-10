@@ -1,0 +1,146 @@
+[<file>]
+FileTypeName=<file>
+FileTypeIcon=
+DefaultAction=0
+NumActions=0
+ColorString=
+
+[<directory>]
+FileTypeName=<directory>
+FileTypeIcon=
+DefaultAction=0
+NumActions=0
+ColorString=
+
+[mp3;wav;wma]
+FileTypeName=Audio Files
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/audio-x-wav.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=smplayer
+Action0Command=smplayer
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+
+[mp4;avi;mkv;mov;wmv;flv;mpeg;mpg;divx;3gp]
+FileTypeName=Video Files
+FileTypeIcon=/usr/share/pixmaps/mplayer.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=SMplayer
+Action0Command=smplayer
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+
+[doc;docx;odt;rtf]
+FileTypeName=Text Office Documents
+FileTypeIcon=/usr/share/icons/gnome/32x32/apps/libreoffice-writer.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=LibreOffice Writer
+Action0Command=libreoffice --writer -o
+Action0RunInTerminal=0
+Action0AutodetectGUI=0
+
+[xls;ods;xlsx]
+FileTypeName=Calc Office Documents
+FileTypeIcon=/usr/share/icons/gnome/32x32/apps/libreoffice-calc.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=LibreOffice Calc
+Action0Command=libreoffice --calc -o
+Action0RunInTerminal=0
+Action0AutodetectGUI=0
+
+[ppt;pps;odp]
+FileTypeName=Presentation Office Documents
+FileTypeIcon=/usr/share/icons/gnome/32x32/apps/libreoffice-impress.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=LibreOffice Impress
+Action0Command=libreoffice --impress -o
+Action0RunInTerminal=0
+Action0AutodetectGUI=0
+
+[jpg;jpeg;gif;png;bmp]
+FileTypeName=Image Format
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/video-x-mng.png
+DefaultAction=1
+NumActions=2
+ColorString=
+Action0Name=Geeqie
+Action0Command=geeqie
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+Action1Name=Viewnior
+Action1Command=viewnior
+Action1RunInTerminal=0
+Action1AutodetectGUI=1
+
+[php;js;c;cpp;h;py;sh]
+FileTypeName=Code
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/text-x-script.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=GVim
+Action0Command=gvim
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+
+[txt]
+FileTypeName=Text
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/text-x-generic.png
+DefaultAction=0
+NumActions=2
+ColorString=
+Action0Name=GVim
+Action0Command=gvim
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+Action1Name=Vim
+Action1Command=vim
+Action1RunInTerminal=1
+Action1AutodetectGUI=0
+
+[pdf]
+FileTypeName=Pdf
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/application-pdf.png
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=Evince
+Action0Command=evince
+Action0RunInTerminal=0
+Action0AutodetectGUI=1
+
+[ino]
+FileTypeName=Arduino Sketch
+FileTypeIcon=/home/ahmet/Desktop/builds/arduino-1.0.5/lib/arduino_icon.ico
+DefaultAction=0
+NumActions=1
+ColorString=
+Action0Name=GVim
+Action0Command=gvim
+Action0RunInTerminal=0
+Action0AutodetectGUI=0
+
+[htm;html]
+FileTypeName=Html
+FileTypeIcon=/usr/share/icons/default.kde4/32x32/mimetypes/application-xhtml+xml.png
+DefaultAction=0
+NumActions=2
+ColorString=
+Action0Name=Firefox
+Action0Command=firefox
+Action0RunInTerminal=0
+Action0AutodetectGUI=0
+Action1Name=Chromium
+Action1Command=chromium
+Action1RunInTerminal=0
+Action1AutodetectGUI=0
