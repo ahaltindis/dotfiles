@@ -2,7 +2,7 @@
 "   ahaltindis. <ahaltindis@gmail.com>
 "   http://ahmt.me
 "   vimrc
-"   Last changed: 2014 Now 29
+"   Last changed: 2015 June 15
 " -------------------------------------------------
 " Environment
 " -------------------------------------------------
@@ -146,3 +146,9 @@ EOF
     " Indent
     " --------------------------------------------
     autocmd FileType ruby set tabstop=2|set shiftwidth=2
+
+" ------------------------------------------------
+"  Latex
+" ------------------------------------------------
+    map <silent>,l :! latexmk -pdfdvi % <CR><CR>
+    map <silent>,la :! evince %<.pdf <CR><CR>
