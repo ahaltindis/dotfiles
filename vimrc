@@ -135,9 +135,9 @@ EOF
        set wrap
        set textwidth=79
        set autoindent
-       set tabstop=4
+       set tabstop=2
        set expandtab
-       set shiftwidth=4
+       set shiftwidth=2
        "set softtabstop=4
 
 " ------------------------------------------------
@@ -146,6 +146,13 @@ EOF
     " Indent
     " --------------------------------------------
     autocmd FileType ruby set tabstop=2|set shiftwidth=2
+
+" ------------------------------------------------
+" Special customizations
+" ------------------------------------------------
+    " Enable jsx in .js files
+    " --------------------------------------------
+    let g:jsx_ext_required = 0
 
 " ------------------------------------------------
 "  Latex
