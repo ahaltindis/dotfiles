@@ -14,7 +14,7 @@ https://github.com/alacritty/alacritty/releases
 Run make to sync configurations to system
 ```
 make
-
+```
 
 ### My Daily Usage
 - Open new Alacritty instance.
@@ -23,4 +23,3 @@ make
 - SSH into remote server.
 - Enter to tmux via `cmd+A` shortcut of Alacritty while in the shell.
 - Switch between Alacritty windows using MacOS shortcut `cmd+``.
-```
