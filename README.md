@@ -18,8 +18,8 @@ make
 
 ### My Daily Usage
 - Open new Alacritty instance.
-- Enter to tmux via `cmd+A` shortcut of Alacritty while in the shell.
+- Enter to tmux via `cmd+a` shortcut of Alacritty while in the shell.
 - Open new Alacritty window for remote connection via `cmd+n`.
 - SSH into remote server.
-- Enter to tmux via `cmd+A` shortcut of Alacritty while in the shell.
-- Switch between Alacritty windows using MacOS shortcut `cmd+``.
+- Enter to tmux via `cmd+a` shortcut of Alacritty while in the shell.
+- Switch between Alacritty windows using MacOS shortcut `` cmd+` ``.
