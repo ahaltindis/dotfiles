@@ -95,26 +95,32 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: SF Mono
+    family: GeistMono NF
     style: Regular
 
+  # Bold font face
   bold:
+    family: GeistMono NF
     style: Bold
 
-  #italic:
+  # Italic font face
+  italic:
+    family: GeistMono NF
     style: Italic
 
+  # Bold italic font face
   bold_italic:
+    family: GeistMono NF
     style: Bold Italic
 
-  size: 13.0
+  size: 14.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
   # spacing.
-  # offset:
-  #  x: 0
-  #  y: 0
+  offset:
+   x: 1
+   y: 2
 
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the
@@ -131,7 +137,7 @@ font:
   # builtin_box_drawing: true
 
 # If `true`, bold text is drawn using the bright color variants.
-draw_bold_text_with_bright_colors: true
+# draw_bold_text_with_bright_colors: true
 
 # Bell
 #
