@@ -46,3 +46,11 @@ Generate Brewfile:
 brew bundle dump
 ```
 
+Disable firefox exiting full screen with ESC:
+```
+Go to about:config
+
+search for browser.fullscreen.exit_on_escape
+
+set to false
+```
