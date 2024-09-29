@@ -461,6 +461,12 @@ vim.keymap.set('', '<C-k>', '<C-W>k')
 vim.keymap.set('', '<C-h>', '<C-W>h')
 vim.keymap.set('', '<C-l>', '<C-W>l')
 
+-- buffers
+vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>")
+vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>")
+vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>") -- other buffer
+vim.keymap.set("n", "<leader>bd", "<cmd>:bd<cr>")
+
 -- Don't jump forward if I higlight and search for a word
 local function stay_star()
   local sview = vim.fn.winsaveview()
