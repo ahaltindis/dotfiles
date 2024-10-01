@@ -399,6 +399,19 @@ require("lazy").setup({
         })
       end,
     },
+    "kdheepak/lazygit.nvim",
+    lazy = true,
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
   }
 })
 
@@ -508,3 +521,7 @@ vim.keymap.set('n', '<leader>ds', vim.diagnostic.setqflist)
 vim.keymap.set('n', '<leader>f', function()
   vim.lsp.buf.format()
 end)
+
+-- lazygit
+vim.keymap.set('n', '<leader>l', "<cmd>LazyGit<cr>")
+
