@@ -21,10 +21,9 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     {
-      "catppuccin/nvim",
-      name = "catppuccin",
+      "sainnhe/gruvbox-material",
       config = function()
-        vim.cmd.colorscheme("catppuccin-mocha")
+        vim.cmd.colorscheme("gruvbox-material")
       end,
     },
     {
@@ -37,7 +36,22 @@ require("lazy").setup({
           auto_install = true,
 
           highlight = {
-            enabled = true
+            enabled = true,
+
+            -- Disable slow treesitter highlight for large files
+            disable = function(lang, buf)
+              local max_filesize = 100 * 1024 -- 100 KB
+              local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+              if ok and stats and stats.size > max_filesize then
+                return true
+              end
+            end,
+
+            -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+            -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+            -- Using this option may slow down your editor, and you may see some duplicate highlights.
+            -- Instead of true it can also be a list of languages
+            additional_vim_regex_highlighting = false,
           },
 
           incremental_selection = {
@@ -92,7 +106,7 @@ require("lazy").setup({
         "hrsh7th/nvim-cmp", -- autocompletion
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
-        -- "onsails/lspkind-nvim", -- emojis in the completion menu for function/package etc.
+        "onsails/lspkind-nvim", -- emojis in the completion menu for function/package etc.
         -- "j-hui/fidget.nvim",  -- notifications as widget
       },
       config = function()
@@ -131,11 +145,22 @@ require("lazy").setup({
         local cmp = require('cmp')
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
         local luasnip = require("luasnip")
+        local lspkind = require("lspkind")
         cmp.setup({
           snippet = {
             expand = function(args)
               require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
             end,
+          },
+          formatting = {
+            format = lspkind.cmp_format {
+              with_text = true,
+              menu = {
+                buffer = "[Buffer]",
+                nvim_lsp = "[LSP]",
+                nvim_lua = "[Lua]",
+              },
+            },
           },
           mapping = cmp.mapping.preset.insert({
             ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -231,10 +256,12 @@ require("lazy").setup({
             sorter = "case_sensitive",
           },
           view = {
-            width = 30,
+            width = 40,
           },
           renderer = {
             group_empty = true,
+            highlight_git = true,
+            highlight_opened_files = "all",
           },
           filters = {
             dotfiles = true,
@@ -412,6 +439,15 @@ require("lazy").setup({
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
+    {
+      "smjonas/inc-rename.nvim",
+      config = function()
+        require("inc_rename").setup()
+      end,
+    },
+    {
+      "voldikss/vim-floaterm",
+    }
   }
 })
 
@@ -419,7 +455,7 @@ require("lazy").setup({
 -- OPTIONS
 --
 vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 
 vim.opt.splitbelow = true
 vim.opt.splitright = true
@@ -451,6 +487,9 @@ vim.opt.ignorecase = true
 -- ignore default terminal colors and allow to use rich colors
 vim.opt.termguicolors = true
 
+-- time it takes to trigger the `CursorHold` event (e.g. highlight symbol)
+vim.opt.updatetime = 400
+
 -- disable default filebrowser netrw because using nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -475,11 +514,11 @@ vim.keymap.set('', '<C-h>', '<C-W>h')
 vim.keymap.set('', '<C-l>', '<C-W>l')
 
 -- buffers
-vim.keymap.set("n", "<leader>[", "<cmd>bprevious<cr>")
-vim.keymap.set("n", "<leader>]", "<cmd>bnext<cr>")
+vim.keymap.set("n", "<C-n>", ":BufferLineCyclePrev<CR>")
+vim.keymap.set("n", "<C-m>", ":BufferLineCycleNext<CR>")
 vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>") -- other buffer
 vim.keymap.set("n", "<leader>bd", "<cmd>:bd<cr>")
-vim.keymap.set("n", "<leader>bdd", "<cmd>:bd!<cr>")
+vim.keymap.set("n", "<leader>bD", "<cmd>:bd!<cr>")
 
 -- Don't jump forward if I higlight and search for a word
 local function stay_star()
@@ -500,7 +539,7 @@ vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true })
 
 -- File-tree mappings
 vim.keymap.set('n', '<leader>n', ':NvimTreeToggle<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>f', ':NvimTreeFindFile!<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>m', ':NvimTreeFindFile!<CR>', { noremap = true })
 
 -- telescope
 local builtin = require('telescope.builtin')
@@ -508,21 +547,72 @@ vim.keymap.set('n', '<C-p>', builtin.git_files, {})
 vim.keymap.set('n', '<C-b>', builtin.buffers, {})
 vim.keymap.set('n', '<C-f>', builtin.find_files, {})
 vim.keymap.set('n', '<C-g>', builtin.lsp_document_symbols, {})
-vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>ds', builtin.diagnostics, {})
 vim.keymap.set('n', '<leader>gs', builtin.grep_string, {})
 vim.keymap.set('n', '<leader>gg', builtin.live_grep, {})
 
 -- diagnostics
 vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>ds', vim.diagnostic.setqflist)
+vim.diagnostic.config({
+  virtual_text = false,  -- bloating the view a lot so hide diagnostic texts. Just symbols are enough.
+})
 
 --lsp
-vim.keymap.set('n', '<leader>f', function()
-  vim.lsp.buf.format()
-end)
+vim.api.nvim_create_autocmd('LspAttach', {
+  desc = 'LSP actions',
+  callback = function(event)
+    local opts = {buffer = event.buf}
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, opts)
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<leader>rn', ':IncRename', opts)
+    vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts)
+
+    local function highlight_symbol(event)
+      local id = vim.tbl_get(event, 'data', 'client_id')
+      local client = id and vim.lsp.get_client_by_id(id)
+      if client == nil or not client.supports_method('textDocument/documentHighlight') then
+        return
+      end
+
+      local group = vim.api.nvim_create_augroup('highlight_symbol', {clear = false})
+
+      vim.api.nvim_clear_autocmds({buffer = event.buf, group = group})
+
+      vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+        group = group,
+        buffer = event.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+
+      vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
+        group = group,
+        buffer = event.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+
+    highlight_symbol(event)
+  end
+})
 
 -- lazygit
 vim.keymap.set('n', '<leader>l', "<cmd>LazyGit<cr>")
+
+-- floaterm
+vim.keymap.set("n", "<leader>o", ":FloatermToggle<CR>")
+vim.keymap.set("t", "<C-t>", "<C-\\><C-n>:FloatermToggle<CR>")
+vim.keymap.set("t", "<C-n>", "<C-\\><C-n>:FloatermNew<CR>")
+vim.keymap.set("t", "<C-i>", "<C-\\><C-n>:FloatermPrev<CR>")
+vim.keymap.set("t", "<C-p>", "<C-\\><C-n>:FloatermNext<CR>")
+-- Close terminal window, even if we are in insert mode
+vim.keymap.set('t', '<C-q>', '<C-\\><C-n>:q<cr>')
+-- Switch to normal mode with esc
+vim.keymap.set('t', '<ESC>', '<C-\\><C-n>')
+-- Something hijacking Tab in terminal mode, so let Tab autocomplete in terminal mode as usual.
+vim.keymap.del("t", "<Tab>")
 
