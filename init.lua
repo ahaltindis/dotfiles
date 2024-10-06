@@ -39,7 +39,7 @@ require("lazy").setup({
             enabled = true,
 
             -- Disable slow treesitter highlight for large files
-            disable = function(lang, buf)
+            disable = function(_, buf)
               local max_filesize = 100 * 1024 -- 100 KB
               local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
               if ok and stats and stats.size > max_filesize then
@@ -107,13 +107,14 @@ require("lazy").setup({
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         "onsails/lspkind-nvim", -- emojis in the completion menu for function/package etc.
-        -- "j-hui/fidget.nvim",  -- notifications as widget
       },
       config = function()
         local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
         require("mason").setup()
-        require("mason-lspconfig").setup()
+        require("mason-lspconfig").setup({
+          ensure_installed = { "lua_ls", "jsonls", "ruff", "pylsp" },
+        })
         require("mason-lspconfig").setup_handlers({
           function(server_name)
             require("lspconfig")[server_name].setup({
@@ -122,7 +123,7 @@ require("lazy").setup({
           end,
           ["lua_ls"] = function()
             local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup {
+            lspconfig.lua_ls.setup({
               capabilities = capabilities,
               settings = {
                 Lua = {
@@ -132,12 +133,50 @@ require("lazy").setup({
                   }
                 }
               }
-            }
+            })
+          end,
+          ["ruff"] = function()
+            require('lspconfig').ruff.setup({
+              init_options = {
+                settings = {
+                  configurationPreference = "filesystemFirst", -- respect to project configuration
+                  lineLength = 100,
+                  lint = {
+                    enable = true,
+                    select = {
+                      "E",      -- pycodestyle errors
+                      "W",      -- pycodestyle warnings
+                      "F",      -- pyflakes
+                      "I",      -- isort
+                      "B",      -- flake8-bugbear
+                      "C4",     -- flake8-comprehensions
+                      "UP",     -- pyupgrade
+                      "ARG001", -- unused arguments in functions
+                    }
+                  }
+                }
+              }
+            })
+          end,
+          ["pylsp"] = function()
+            require('lspconfig').pylsp.setup({
+              settings = {
+                pylsp = {
+                  plugins = {
+                    pycodestyle = {
+                      enabled = false, -- leaving to ruff
+                    },
+                    pyflakes = {
+                      enabled = false, -- leaving to ruff
+                    },
+                  }
+                }
+              }
+            })
           end,
         })
 
         local has_words_before = function()
-          unpack = unpack or table.unpack
           local line, col = unpack(vim.api.nvim_win_get_cursor(0))
           return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
         end
@@ -230,11 +269,6 @@ require("lazy").setup({
             },
             show_buffer_icons = true,
             separator_style = "slant",
-            hover = {
-              enabled = true,
-              delay = 200,
-              reveal = { 'close' }
-            },
             sort_by = "directory"
           },
         })
@@ -264,7 +298,8 @@ require("lazy").setup({
             highlight_opened_files = "all",
           },
           filters = {
-            dotfiles = true,
+            dotfiles = false,
+            git_ignored = false,
           },
           on_attach = function(bufnr)
             local api = require "nvim-tree.api"
@@ -285,7 +320,7 @@ require("lazy").setup({
         })
 
         -- Make :bd and :q behave as usual when tree is visible
-        vim.api.nvim_create_autocmd({'BufEnter', 'QuitPre'}, {
+        vim.api.nvim_create_autocmd({ 'BufEnter', 'QuitPre' }, {
           nested = false,
           callback = function(e)
             local tree = require('nvim-tree.api').tree
@@ -297,7 +332,7 @@ require("lazy").setup({
 
             -- How many focusable windows do we have? (excluding e.g. incline status window)
             local winCount = 0
-            for _,winId in ipairs(vim.api.nvim_list_wins()) do
+            for _, winId in ipairs(vim.api.nvim_list_wins()) do
               if vim.api.nvim_win_get_config(winId).focusable then
                 winCount = winCount + 1
               end
@@ -305,7 +340,7 @@ require("lazy").setup({
 
             -- We want to quit and only one window besides tree is left
             if e.event == 'QuitPre' and winCount == 2 then
-              vim.api.nvim_cmd({cmd = 'qall'}, {})
+              vim.api.nvim_cmd({ cmd = 'qall' }, {})
             end
 
             -- :bd was probably issued an only tree window is left
@@ -314,9 +349,9 @@ require("lazy").setup({
               -- Required to avoid "Vim:E444: Cannot close last window"
               vim.defer_fn(function()
                 -- close nvim-tree: will go to the last buffer used before closing
-                tree.toggle({find_file = true, focus = true})
+                tree.toggle({ find_file = true, focus = true })
                 -- re-open nivm-tree
-                tree.toggle({find_file = true, focus = false})
+                tree.toggle({ find_file = true, focus = false })
               end, 10)
             end
           end
@@ -344,8 +379,8 @@ require("lazy").setup({
     },
     {
       "lewis6991/gitsigns.nvim",
-      config = function() 
-        require('gitsigns').setup{
+      config = function()
+        require('gitsigns').setup({
           on_attach = function(bufnr)
             local gitsigns = require('gitsigns')
 
@@ -358,7 +393,7 @@ require("lazy").setup({
             -- Navigation
             map('n', ']c', function()
               if vim.wo.diff then
-                vim.cmd.normal({']c', bang = true})
+                vim.cmd.normal({ ']c', bang = true })
               else
                 gitsigns.nav_hunk('next')
               end
@@ -366,7 +401,7 @@ require("lazy").setup({
 
             map('n', '[c', function()
               if vim.wo.diff then
-                vim.cmd.normal({'[c', bang = true})
+                vim.cmd.normal({ '[c', bang = true })
               else
                 gitsigns.nav_hunk('prev')
               end
@@ -375,22 +410,22 @@ require("lazy").setup({
             -- Actions
             map('n', '<leader>hs', gitsigns.stage_hunk)
             map('n', '<leader>hr', gitsigns.reset_hunk)
-            map('v', '<leader>hs', function() gitsigns.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
-            map('v', '<leader>hr', function() gitsigns.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
+            map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end)
+            map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end)
             map('n', '<leader>hS', gitsigns.stage_buffer)
             map('n', '<leader>hu', gitsigns.undo_stage_hunk)
             map('n', '<leader>hR', gitsigns.reset_buffer)
             map('n', '<leader>hp', gitsigns.preview_hunk)
-            map('n', '<leader>hb', function() gitsigns.blame_line{full=true} end)
+            map('n', '<leader>hb', function() gitsigns.blame_line { full = true } end)
             map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
             map('n', '<leader>hd', gitsigns.diffthis)
             map('n', '<leader>hD', function() gitsigns.diffthis('~') end)
             map('n', '<leader>td', gitsigns.toggle_deleted)
 
             -- Text object
-            map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+            map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
           end
-        }
+        })
       end
     },
     {
@@ -403,13 +438,13 @@ require("lazy").setup({
       "lukas-reineke/indent-blankline.nvim",
       config = function()
         require("ibl").setup({
-          indent = { 
+          indent = {
             highlight = {
               "Whitespace",
-            }, 
+            },
             char = ".",
           },
-          scope = { 
+          scope = {
             enabled = false
           },
         })
@@ -420,8 +455,8 @@ require("lazy").setup({
       "ethanholz/nvim-lastplace",
       config = function()
         require("nvim-lastplace").setup({
-          lastplace_ignore_buftype = {"quickfix", "nofile", "help"},
-          lastplace_ignore_filetype = {"gitcommit", "gitrebase", "svn", "hgcommit"},
+          lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
+          lastplace_ignore_filetype = { "gitcommit", "gitrebase", "svn", "hgcommit" },
           lastplace_open_folds = true
         })
       end,
@@ -447,7 +482,10 @@ require("lazy").setup({
     },
     {
       "voldikss/vim-floaterm",
-    }
+    },
+    -- TODO:
+    -- mini.pairs for auto-closing quotes, brackets, etc
+    -- mini.surround to surround text with a character, or remove/replace a surrounding
   }
 })
 
@@ -489,6 +527,9 @@ vim.opt.termguicolors = true
 
 -- time it takes to trigger the `CursorHold` event (e.g. highlight symbol)
 vim.opt.updatetime = 400
+
+-- Enable highlighting of the current line
+vim.opt.cursorline = true
 
 -- disable default filebrowser netrw because using nvim-tree
 vim.g.loaded_netrw = 1
@@ -554,14 +595,18 @@ vim.keymap.set('n', '<leader>gg', builtin.live_grep, {})
 -- diagnostics
 vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float)
 vim.diagnostic.config({
-  virtual_text = false,  -- bloating the view a lot so hide diagnostic texts. Just symbols are enough.
+  virtual_text = false, -- bloating the view a lot so hide diagnostic texts. Just symbols are enough.
+  float = {
+    source = 'always',  -- if_many could be an option as well
+    border = 'rounded',
+  },
 })
 
 --lsp
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
   callback = function(event)
-    local opts = {buffer = event.buf}
+    local opts = { buffer = event.buf }
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
@@ -572,31 +617,31 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<leader>rn', ':IncRename', opts)
     vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts)
 
-    local function highlight_symbol(event)
+    local function highlight_symbol()
       local id = vim.tbl_get(event, 'data', 'client_id')
       local client = id and vim.lsp.get_client_by_id(id)
       if client == nil or not client.supports_method('textDocument/documentHighlight') then
         return
       end
 
-      local group = vim.api.nvim_create_augroup('highlight_symbol', {clear = false})
+      local group = vim.api.nvim_create_augroup('highlight_symbol', { clear = false })
 
-      vim.api.nvim_clear_autocmds({buffer = event.buf, group = group})
+      vim.api.nvim_clear_autocmds({ buffer = event.buf, group = group })
 
-      vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
         group = group,
         buffer = event.buf,
         callback = vim.lsp.buf.document_highlight,
       })
 
-      vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
         group = group,
         buffer = event.buf,
         callback = vim.lsp.buf.clear_references,
       })
     end
 
-    highlight_symbol(event)
+    highlight_symbol()
   end
 })
 
@@ -605,14 +650,17 @@ vim.keymap.set('n', '<leader>l', "<cmd>LazyGit<cr>")
 
 -- floaterm
 vim.keymap.set("n", "<leader>o", ":FloatermToggle<CR>")
-vim.keymap.set("t", "<C-t>", "<C-\\><C-n>:FloatermToggle<CR>")
+vim.keymap.set("t", "<C-q>", "<C-\\><C-n>:FloatermToggle<CR>")
 vim.keymap.set("t", "<C-n>", "<C-\\><C-n>:FloatermNew<CR>")
-vim.keymap.set("t", "<C-i>", "<C-\\><C-n>:FloatermPrev<CR>")
-vim.keymap.set("t", "<C-p>", "<C-\\><C-n>:FloatermNext<CR>")
--- Close terminal window, even if we are in insert mode
-vim.keymap.set('t', '<C-q>', '<C-\\><C-n>:q<cr>')
--- Switch to normal mode with esc
-vim.keymap.set('t', '<ESC>', '<C-\\><C-n>')
--- Something hijacking Tab in terminal mode, so let Tab autocomplete in terminal mode as usual.
-vim.keymap.del("t", "<Tab>")
+vim.keymap.set("t", "<C-p>", "<C-\\><C-n>:FloatermPrev<CR>")
+vim.keymap.set("t", "<C-_>", "<C-\\><C-n>:FloatermNext<CR>")
+-- Switch to normal mode with esc (only in floaterm to not break lazygit on <esc> cancel functionality)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "floaterm",
+  callback = function(event)
+    vim.keymap.set('t', '<ESC>', '<C-\\><C-n>', { buffer = event.buf })
+  end
+})
 
+-- Something hijacking Tab in terminal mode, so let alone Tab in there.
+vim.keymap.set("t", "<Tab>", "<Tab>")
