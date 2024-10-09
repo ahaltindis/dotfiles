@@ -3,7 +3,16 @@ dotfiles
 
 Some configuration files for my system.
 
-### Installation
+## Installation
+
+### Font
+Neovim needs a nerd font to be able to look nice.
+
+Currenty using `GeistMono Nerd Font` which can be downloaded from here:
+https://www.nerdfonts.com/font-downloads
+
+Alacritty is configured to use `GeistMono NF` version.
+
 
 Download and install SF Mono for Alacritty in MacOS:
 https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg

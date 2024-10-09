@@ -251,6 +251,23 @@ require("lazy").setup({
       end
     },
     {
+      "nvim-neotest/neotest",
+      dependencies = {
+        "nvim-neotest/nvim-nio",
+        "nvim-lua/plenary.nvim",
+        "antoinemadec/FixCursorHold.nvim",
+        "nvim-treesitter/nvim-treesitter",
+        "nvim-neotest/neotest-python"
+      },
+      config = function()
+        require("neotest").setup({
+          adapters = {
+            require("neotest-python")
+          }
+        })
+      end
+    },
+    {
       'akinsho/bufferline.nvim',
       version = "*",
       dependencies = 'nvim-tree/nvim-web-devicons',
@@ -483,6 +500,14 @@ require("lazy").setup({
     {
       "voldikss/vim-floaterm",
     },
+    -- Highlight todo, notes, etc in comments
+    {
+      'folke/todo-comments.nvim',
+      event = 'VimEnter',
+      dependencies = { 'nvim-lua/plenary.nvim' },
+      opts = { signs = false }
+    },
+
     -- TODO:
     -- mini.pairs for auto-closing quotes, brackets, etc
     -- mini.surround to surround text with a character, or remove/replace a surrounding
@@ -614,8 +639,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, opts)
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<leader>rn', ':IncRename', opts)
-    vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts)
 
     local function highlight_symbol()
       local id = vim.tbl_get(event, 'data', 'client_id')
@@ -644,6 +667,12 @@ vim.api.nvim_create_autocmd('LspAttach', {
     highlight_symbol()
   end
 })
+-- leaving out of above block on purpose to get error on formatting if there is no LSP attached.
+vim.keymap.set('n', '<leader>f', vim.lsp.buf.format)
+
+vim.keymap.set("n", "<leader>rn", function()
+  return ":IncRename " .. vim.fn.expand("<cword>")
+end, { expr = true })
 
 -- lazygit
 vim.keymap.set('n', '<leader>l', "<cmd>LazyGit<cr>")
