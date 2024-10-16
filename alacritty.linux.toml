@@ -1,0 +1,29 @@
+[window]
+startup_mode = "FullScreen"
+
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Key0"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Equals"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Minus"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "N"
+mods = "Super"
+
+[[keyboard.bindings]]
+chars = """
+tmux new-session -A -D -s main
+"""
+key = "A"
+mods = "Super"

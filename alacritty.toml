@@ -1,3 +1,7 @@
+import = [
+  "~/.config/alacritty/alacritty.os.toml",
+]
+
 live_config_reload = true
 
 [cursor]
@@ -30,52 +34,8 @@ style = "Regular"
 x = 1
 y = 2
 
-[hints]
-alphabet = "jfkdls;ahgurieowpq"
-
-[[hints.enabled]]
-command = "open"
-hyperlinks = true
-post_processing = true
-regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
-
-[hints.enabled.binding]
-key = "U"
-mods = "Control|Shift"
-
-[hints.enabled.mouse]
-enabled = true
-mods = "None"
-
-[[keyboard.bindings]]
-action = "ResetFontSize"
-key = "Key0"
-mods = "Command"
-
-[[keyboard.bindings]]
-action = "IncreaseFontSize"
-key = "Equals"
-mods = "Command"
-
-[[keyboard.bindings]]
-action = "DecreaseFontSize"
-key = "Minus"
-mods = "Command"
-
-[[keyboard.bindings]]
-action = "CreateNewWindow"
-key = "N"
-mods = "Command"
-
-[[keyboard.bindings]]
-chars = """
-tmux new-session -A -D -s main
-"""
-key = "A"
-mods = "Command"
-
 [mouse]
-hide_when_typing = true
+hide_when_typing = false
 
 [scrolling]
 history = 10000
@@ -83,14 +43,12 @@ multiplier = 3
 
 [selection]
 save_to_clipboard = true
-semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
 
 [window]
 decorations = "full"
 dynamic_padding = false
 dynamic_title = true
 opacity = 1
-startup_mode = "SimpleFullScreen"
 
 [window.dimensions]
 columns = 0
