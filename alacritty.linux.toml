@@ -27,3 +27,13 @@ tmux new-session -A -D -s main
 """
 key = "A"
 mods = "Super"
+
+[[keyboard.bindings]]
+action = "Copy"
+key = "C"
+mods = "Super"
+
+[[keyboard.bindings]]
+action = "Paste"
+key = "V"
+mods = "Super"
