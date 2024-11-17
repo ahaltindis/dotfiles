@@ -260,9 +260,12 @@ require("lazy").setup({
         "nvim-neotest/neotest-python"
       },
       config = function()
-        require("neotest").setup({
+        local neotest = require("neotest")
+        neotest.setup({
           adapters = {
-            require("neotest-python")
+            require("neotest-python")({
+              args = {"--log-level", "DEBUG", "-vv"},
+            })
           }
         })
       end
@@ -507,7 +510,6 @@ require("lazy").setup({
       dependencies = { 'nvim-lua/plenary.nvim' },
       opts = { signs = false }
     },
-
     -- TODO:
     -- mini.pairs for auto-closing quotes, brackets, etc
     -- mini.surround to surround text with a character, or remove/replace a surrounding
@@ -524,6 +526,7 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 
 vim.opt.wrap = true
+vim.opt.colorcolumn = '100'
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
@@ -554,7 +557,7 @@ vim.opt.termguicolors = true
 vim.opt.updatetime = 400
 
 -- Enable highlighting of the current line
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- disable default filebrowser netrw because using nvim-tree
 vim.g.loaded_netrw = 1
@@ -562,10 +565,15 @@ vim.g.loaded_netrwPlugin = 1
 
 -- set leader to empty space
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- Move selected lines up and down
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+
+-- Keep selection after indent/deindent
+vim.keymap.set('v', '>', '>gv', { noremap = true })
+vim.keymap.set('v', '<', '<gv', { noremap = true })
 
 -- Keep cursor at the same line when joining below lines
 vim.keymap.set('n', 'J', "mzJ`z")
@@ -676,6 +684,17 @@ end, { expr = true })
 
 -- lazygit
 vim.keymap.set('n', '<leader>l', "<cmd>LazyGit<cr>")
+
+-- neotest
+local neotest = require("neotest")
+vim.keymap.set('n', "<leader>tt", function() neotest.run.run(vim.fn.expand "%") end)                       -- Run File
+vim.keymap.set('n', "<leader>tT", function() neotest.run.run(vim.loop.cwd()) end)                          -- Run All Test Files
+vim.keymap.set('n', "<leader>tr", function() neotest.run.run() end)                                        -- Run Nearest
+vim.keymap.set('n', "<leader>ts", function() neotest.summary.toggle() end)                                 -- Toggle Summary
+vim.keymap.set('n', "<leader>tO", function() neotest.output.open({ auto_close = true }) end) -- Show Output
+vim.keymap.set('n', "<leader>to", function() neotest.output_panel.toggle() end)                            -- Toggle Output Panel
+vim.keymap.set('n', "<leader>tS", function() neotest.run.stop() end)                                       -- Stop
+vim.keymap.set('n', "<leader>td", function() neotest.run.run { strategy = "dap" } end)                     -- Debug Nearest
 
 -- floaterm
 vim.keymap.set("n", "<leader>o", ":FloatermToggle<CR>")
