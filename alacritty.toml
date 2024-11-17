@@ -11,9 +11,6 @@ unfocused_hollow = true
 blinking = "Off"
 shape = "Block"
 
-[font]
-size = 14.0
-
 [font.bold]
 family = "GeistMono NF"
 style = "Bold"

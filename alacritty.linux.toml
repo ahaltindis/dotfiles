@@ -1,6 +1,9 @@
 [window]
 startup_mode = "FullScreen"
 
+[font]
+size = 10.0
+
 [[keyboard.bindings]]
 action = "ResetFontSize"
 key = "Key0"
