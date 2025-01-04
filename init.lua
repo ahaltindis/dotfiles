@@ -513,7 +513,10 @@ require("lazy").setup({
     -- TODO:
     -- mini.pairs for auto-closing quotes, brackets, etc
     -- mini.surround to surround text with a character, or remove/replace a surrounding
-  }
+    {
+      "chrisbra/csv.vim"
+    }
+  },
 })
 
 --
@@ -588,8 +591,9 @@ vim.keymap.set('', '<C-h>', '<C-W>h')
 vim.keymap.set('', '<C-l>', '<C-W>l')
 
 -- buffers
-vim.keymap.set("n", "<C-n>", ":BufferLineCyclePrev<CR>")
-vim.keymap.set("n", "<C-m>", ":BufferLineCycleNext<CR>")
+vim.keymap.set("n", "<C-p>", ":BufferLineCyclePrev<CR>")
+vim.keymap.set("n", "<C-n>", ":BufferLineCycleNext<CR>")
+vim.keymap.set("n", "<C-q>", ":BufferLineCloseOthers<CR>")
 vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>") -- other buffer
 vim.keymap.set("n", "<leader>bd", "<cmd>:bd<cr>")
 vim.keymap.set("n", "<leader>bD", "<cmd>:bd!<cr>")
@@ -617,10 +621,10 @@ vim.keymap.set('n', '<leader>m', ':NvimTreeFindFile!<CR>', { noremap = true })
 
 -- telescope
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<C-p>', builtin.git_files, {})
+vim.keymap.set('n', '<C-g>', builtin.git_files, {})
 vim.keymap.set('n', '<C-b>', builtin.buffers, {})
 vim.keymap.set('n', '<C-f>', builtin.find_files, {})
-vim.keymap.set('n', '<C-g>', builtin.lsp_document_symbols, {})
+vim.keymap.set('n', '<C-s>', builtin.lsp_document_symbols, {})
 vim.keymap.set('n', '<leader>ds', builtin.diagnostics, {})
 vim.keymap.set('n', '<leader>gs', builtin.grep_string, {})
 vim.keymap.set('n', '<leader>gg', builtin.live_grep, {})
