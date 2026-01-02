@@ -8,6 +8,3 @@ vim.opt.relativenumber = false
 vim.opt.spelllang = { "en", "tr" }
 vim.opt.colorcolumn = "100"
 vim.opt.cursorline = false
-
--- set active indention color to something not very distractive
-vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = "#494d64" })
